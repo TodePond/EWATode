@@ -5,7 +5,7 @@
 			const scope = {}
 			const term = (() => {
 	global.EWATode = Term.term('EWATode', scope)
-	return Term.subTerms(Term.string(''), [['EWATode', Term.string(`Hello world!`)]])
+	return Term.subTerms(Term.string(''), [['EWATode', Term.emit(Term.string(''), Magic)], ['Magic', Term.emit(Term.string(''), "02 03 07 41")]])
 })()
 			for (const key in term) {
 				scope[key] = term[key]
