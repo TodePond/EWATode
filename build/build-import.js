@@ -9,7 +9,7 @@ const global = window
 			const scope = {}
 			const term = (() => {
 	global.EWATode = Term.term('EWATode', scope)
-	return Term.subTerms(Term.string(''), [['EWATode', Term.emit(Term.string(''), Magic)], ['Magic', Term.emit(Term.string(''), "02 03 07 41")]])
+	return Term.subTerms(Term.string(''), [['EWATode', Term.term('EWATode.Magic', scope)], ['Magic', Term.chain(Term.emit(Term.string(''), "02 03 07 41"), Term.term('Magic.Hex', scope))], ['Strip', Term.emit(Term.many(Term.regExp(/[^]/)), ({output}) => output.split("").filter(c => c !== " ").join(""))], ['Hex', Term.chain(Term.term('Hex.Strip', scope), Term.many(Term.term('Hex.HexNum', scope)))], ['HexNum', Term.emit(Term.list([Term.term('HexNum.HexNumDigit', scope), Term.term('HexNum.HexNumDigit', scope)]), ({output}) => parseInt(output, 16).toString(2).padStart(8, "0"))], ['HexNumDigit', Term.regExp(/[0-9A-F]/)]])
 })()
 			for (const key in term) {
 				scope[key] = term[key]
