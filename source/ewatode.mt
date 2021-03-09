@@ -8,5 +8,5 @@
 	HexNum :: HexNumDigit HexNumDigit >> ({output}) => parseInt(output, 16).toString(2).padStart(8, "0")
 	HexNumDigit :: /[0-9A-F]/
 
-	Strip :: (:: ” " >> "") | /[^]/+
+	Strip :: ((:: ” " >> "") | /[^]/)+
 )
