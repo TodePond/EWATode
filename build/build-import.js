@@ -10,15 +10,25 @@ const global = window
 			const term = (() => {
 	global.EWATode = Term.term('EWATode', scope)
 	return Term.subTerms(Term.string(''), [
-['EWATode', Term.term('EWATode.Magic', scope)],
+['EWATode', Term.list([
+		Term.term('EWATode.Magic', scope),
+		Term.term('EWATode.MinorVersion', scope),
+Term.term('EWATode.MajorVersion', scope),
+Term.term('EWATode.CompileTag', scope),
+Term.term('EWATode.Metadata', scope),
+Term.term('EWATode.CodeIndex', scope),
+Term.term('EWATode.Code', scope)
+	])],
 ['Magic', Term.chain(Term.emit(Term.string(''), "02 03 07 41"), Term.term('Magic.HexNums', scope))],
-['HexNums', Term.chain(Term.term('HexNums.Strip', scope), Term.many(Term.term('HexNums.HexNum', scope)))],
-['HexNum', Term.emit(Term.list([Term.term('HexNum.HexNumDigit', scope), Term.term('HexNum.HexNumDigit', scope)]), ({output}) => parseInt(output, 16).toString(2).padStart(8, "0"))],
-['HexNumDigit', Term.regExp(/[0-9A-F]/)],
-['Strip', Term.many(Term.or([
-		Term.emit(Term.string(` `), ""),
-		Term.regExp(/[^]/)
-	]))]
+['MinorVersion', Term.chain(Term.emit(Term.string(''), "00 01"), Term.term('MinorVersion.HexNums', scope))],
+['MajorVersion', Term.chain(Term.emit(Term.string(''), "00 00"), Term.term('MajorVersion.HexNums', scope))],
+['CompileTag', Term.chain(Term.emit(Term.string(''), "53 41 4e 44 50 4f 4e 44"), Term.term('CompileTag.HexNums', scope))],
+['HexNums', Term.many(Term.term('HexNums.HexNum', scope))],
+['HexNum', Term.list([Term.term('HexNum.HexNumDigit', scope), Term.string(` `), Term.term('HexNum.HexNumDigit', scope)])],
+['HexNumDigit', Term.regExp(/[0-9A-Fa-f]/)],
+['Metadata', Term.chain(Term.emit(Term.string(''), "00"), Term.term('Metadata.HexNums', scope))],
+['CodeIndex', Term.chain(Term.emit(Term.string(''), "00 00"), Term.term('CodeIndex.HexNums', scope))],
+['Code', Term.chain(Term.emit(Term.string(''), "00 00"), Term.term('Code.HexNums', scope))]
 ])
 })()
 			for (const key in term) {
