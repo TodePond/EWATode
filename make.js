@@ -1,4 +1,4 @@
-import {Habitat} from "./libraries/habitat-import.js"
+import {Habitat} from "../Habitat-2/build/habitat-import.js"
 Habitat.install(window)
 
 // Feel free to edit this file to suit your project
