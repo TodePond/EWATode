@@ -10,29 +10,29 @@ const global = window
 			const term = (() => {
 	global.EWATode = Term.term('EWATode', scope)
 	return Term.subTerms(Term.string(''), [
-['EWATode', Term.emit(Term.list([
-		Term.term('EWATode.Magic', scope),
-		Term.term('EWATode.MinorVersion', scope),
-Term.term('EWATode.MajorVersion', scope),
-Term.term('EWATode.CompileTag', scope),
-Term.term('EWATode.Metadata', scope),
-Term.term('EWATode.CodeIndex', scope),
-Term.term('EWATode.Code', scope)
-	]), ({output}) => output.match(/.{2}/g).join(" "))],
-['Magic', Term.chain(Term.emit(Term.string(''), "02 03 07 41"), Term.term('Magic.HexNums', scope))],
-['MinorVersion', Term.chain(Term.emit(Term.string(''), "00 01"), Term.term('MinorVersion.HexNums', scope))],
-['MajorVersion', Term.chain(Term.emit(Term.string(''), "00 00"), Term.term('MajorVersion.HexNums', scope))],
-['CompileTag', Term.chain(Term.emit(Term.string(''), "53 41 4e 44 50 4f 4e 44"), Term.term('CompileTag.HexNums', scope))],
-['HexNums', Term.chain(Term.term('HexNums.Strip', scope), Term.many(Term.term('HexNums.HexNum', scope)))],
+['EWATode', Term.chain(Term.term('EWATode.Source', scope), Term.term('EWATode.HexNums', scope))],
+['HexNums', Term.list([Term.term('HexNums.HexNum', scope), Term.maybe(Term.many(Term.term('HexNums.HexNumsTail', scope)))])],
+['HexNumsTail', Term.emit(Term.list([Term.maybe(Term.many(Term.regExp(/ |	/))), Term.term('HexNumsTail.HexNum', scope)]), ([gap, n]) => ` ${n}`)],
 ['HexNum', Term.list([Term.term('HexNum.HexNumDigit', scope), Term.term('HexNum.HexNumDigit', scope)])],
 ['HexNumDigit', Term.regExp(/[0-9A-Fa-f]/)],
-['Strip', Term.maybe(Term.many(Term.or([
-		Term.emit(Term.string(` `), ""),
-		Term.regExp(/[^]/)
-	])))],
-['Metadata', Term.chain(Term.emit(Term.string(''), "00"), Term.term('Metadata.HexNums', scope))],
-['CodeIndex', Term.chain(Term.emit(Term.string(''), "00 00"), Term.term('CodeIndex.HexNums', scope))],
-['Code', Term.chain(Term.emit(Term.string(''), "00 00"), Term.term('Code.HexNums', scope))]
+['Source', Term.list([
+		Term.term('Source.Magic', scope),
+		Term.term('Source.MinorVersion', scope),
+Term.term('Source.MajorVersion', scope),
+Term.term('Source.BuildTag', scope),
+Term.term('Source.Metadata', scope),
+Term.term('Source.CodeIndex', scope),
+Term.term('Source.Code', scope)
+	])],
+['Magic', Term.emit(Term.string(''), "02 03 07 41")],
+['MinorVersion', Term.emit(Term.string(''), "00 01")],
+['MajorVersion', Term.emit(Term.string(''), "00 00")],
+['BuildTag', Term.list([Term.term('BuildTag.BuildTagLength', scope), Term.term('BuildTag.BuildTags', scope)])],
+['BuildTagLength', Term.emit(Term.string(''), "08")],
+['BuildTags', Term.emit(Term.string(''), "53 41 4e 44 50 4f 4e 44")],
+['Metadata', Term.emit(Term.string(''), "00")],
+['CodeIndex', Term.emit(Term.string(''), "00 00")],
+['Code', Term.emit(Term.string(''), "00 00")]
 ])
 })()
 			for (const key in term) {

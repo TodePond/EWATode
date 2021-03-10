@@ -1,32 +1,36 @@
 (
 	export EWATode
 	
-	EWATode :: (
-		Magic
-		MinorVersion
-		MajorVersion
-		CompileTag
-		Metadata
-		CodeIndex
-		Code
-	) >> ({output}) => output.match(/.{2}/g).join(" ")
+	EWATode (
+		++ Source
+		:: HexNums
+	)
 	
-	Magic :: HexNums ++ >> "02 03 07 41"
-	MinorVersion :: HexNums ++ >> "00 01"
-	MajorVersion :: HexNums ++ >> "00 00"
-	CompileTag :: HexNums ++ >> "53 41 4e 44 50 4f 4e 44"
-	
-	HexNums ++ Strip :: HexNum+
+	HexNums :: HexNum {HexNumsTail}
+	HexNumsTail :: [_] HexNum >> ([gap, n]) => ` \\\${n}`
 	HexNum :: HexNumDigit HexNumDigit
 	HexNumDigit :: /[0-9A-Fa-f]/
 	
-	Strip :: {<
-		:: " " >> ""
-		/[^]/
-	>}
+	Source :: (
+		Magic
+		MinorVersion
+		MajorVersion
+		BuildTag
+		Metadata
+		CodeIndex
+		Code
+	)
 	
-	Metadata :: HexNums ++ >> "00"
-	CodeIndex :: HexNums ++ >> "00 00"
-	Code :: HexNums ++ >> "00 00"
+	Magic >> "02 03 07 41"
+	MinorVersion >> "00 01"
+	MajorVersion >> "00 00"
+	
+	BuildTag :: BuildTagLength BuildTags
+	BuildTagLength >> "08"
+	BuildTags >> "53 41 4e 44 50 4f 4e 44"
+	
+	Metadata >> "00"
+	CodeIndex >> "00 00"
+	Code >> "00 00"
 	
 )
