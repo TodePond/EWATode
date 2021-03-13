@@ -450,7 +450,13 @@ Habitat.install = (global) => {
 		`
 		const fullOutput = `(() => {\n${output}\n})()`
 		if (!make) return fullOutput
-		const func = new Function(output)
+		let func
+		try {
+			func = new Function(output)
+		}
+		catch {
+			console.log(output)
+		}
 		
 		
 		const term = func()
@@ -1086,7 +1092,13 @@ Habitat.install = (global) => {
 				),
 				Term.string(`/`),
 			]),
-			([left, inner]) => `Term.regExp(/${inner}/)`
+			([left, inner]) => {
+				const source = inner.output.split("").map(c => {
+					if (c === "\\") return "\\\\\\"
+					return c
+				}).join("")
+				return `Term.regExp(/${source}/)`
+			},
 		)
 		
 		scope.VerticalList = Term.emit(

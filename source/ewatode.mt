@@ -1,13 +1,19 @@
 (
 	export EWATode
 	
-	++ WithoutComments
-	:: /[^]/*
+	++ Preprocessed
+	:: Line { "\n" Line } EOF
 	
-	WithoutComments <
+	Preprocessed <
 		:: "//" /[^\n]/* >> ""
+		
 		/[^]/
 	>*
+	
+	Line :: [_] Instruction [_]
+	Instruction (
+		:: "hi"
+	)
 	
 	Constant (
 		:: UInt | SInt | Binary | Hex

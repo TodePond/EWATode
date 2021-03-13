@@ -3,11 +3,13 @@
 
 			const global = window
 			const scope = {}
-			const term = Term.export(Term.subTerms(Term.chain(Term.term('WithoutComments', scope), Term.maybe(Term.many(Term.regExp(/[^]/)))), [
-['WithoutComments', Term.maybe(Term.many(Term.or([
-		Term.emit(Term.list([Term.string(`//`), Term.maybe(Term.many(Term.regExp(/[^]/)))]), ""),
+			const term = Term.export(Term.subTerms(Term.chain(Term.term('Preprocessed', scope), Term.list([Term.term('Line', scope), Term.maybe(Term.many(Term.list([Term.string(`\\n`), Term.term('Line', scope)]))), Term.eof])), [
+['Preprocessed', Term.maybe(Term.many(Term.or([
+		Term.emit(Term.list([Term.string(`//`), Term.maybe(Term.many(Term.regExp(/[^\n]/)))]), ""),
 		Term.regExp(/[^]/)
 	])))],
+['Line', Term.list([Term.maybe(Term.many(Term.regExp(/ |	/))), Term.term('Line.Instruction', scope), Term.maybe(Term.many(Term.regExp(/ |	/)))])],
+['Instruction', Term.string(`hi`)],
 ['Constant', Term.subTerms(Term.or([Term.term('Constant.UInt', scope), Term.term('Constant.SInt', scope), Term.term('Constant.Binary', scope), Term.term('Constant.Hex', scope)]), [
 ['UInt', Term.check(Term.list([Term.regExp(/[1-9]/), Term.maybe(Term.many(Term.regExp(/[0-9]/)))]), (n) => n < 2**96-1)],
 ['SInt', Term.check(Term.list([Term.or([Term.string(`+`), Term.string(`-`)]), Term.regExp(/[1-9]/), Term.maybe(Term.many(Term.regExp(/[0-9]/)))]), (n) => n > -(2**95) && n < 2**95-1)],
