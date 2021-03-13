@@ -578,10 +578,11 @@ Habitat.install = (global) => {
 			}
 			if (exp !== undefined) {
 				const lines = []
-				lines.push(`(() => {`)
+				lines.push(`Term.export(${definition}, global, "${exp[0]}")`)
+				/*lines.push(`(() => {`)
 				lines.push(`	global.${exp[0]} = ${exp[1]}`)
 				lines.push(`	return ${definition}`)
-				lines.push(`})()`)
+				lines.push(`})()`)*/
 				definition = lines.join("\n")
 			}
 			return definition
@@ -1897,6 +1898,11 @@ Habitat.install = (global) => {
 			return
 		}
 		return setValue(object[head], tail, value)
+	}
+	
+	Term.export = (term, global, name) => {
+		global[name] = term
+		return term
 	}
 	
 	Term.term = (key, object) => {

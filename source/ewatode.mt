@@ -1,36 +1,33 @@
 (
 	export EWATode
 	
-	EWATode (
-		++ Source
-		:: HexNums
+	++ WithoutComments
+	:: /[^]/*
+	
+	WithoutComments :: <
+		:: "//" /[^\\\n]/* >> ""
+		/[^]/
+	>*
+	
+	Constant (
+		:: UInt | SInt | Binary | Hex
+		UInt (
+			:: /[1-9]/ /[0-9]/*
+			?? (n) => n < 2**96-1
+		)
+		
+		SInt (
+			:: "+" | "-" /[1-9]/ /[0-9]/*
+			?? (n) => n > -(2**95) && n < 2**95-1
+		)
+		
+		Binary :: "0b" ("0" | "1")+
+		Hex :: "0x" /[0-9a-f]/+
 	)
 	
-	HexNums :: HexNum {HexNumsTail}
-	HexNumsTail :: [_] HexNum >> ([gap, n]) => ` \\\${n}`
-	HexNum :: HexNumDigit HexNumDigit
-	HexNumDigit :: /[0-9A-Fa-f]/
-	
-	Source :: (
-		Magic
-		MinorVersion
-		MajorVersion
-		BuildTag
-		Metadata
-		CodeIndex
-		Code
+	Register (
+		:: Random | Numbered
+		Random :: "R?"
+		Numbered :: "R" /[0-9]/ | ("1" /[0-4]/)
 	)
-	
-	Magic >> "02 03 07 41"
-	MinorVersion >> "00 01"
-	MajorVersion >> "00 00"
-	
-	BuildTag :: BuildTagLength BuildTags
-	BuildTagLength >> "08"
-	BuildTags >> "53 41 4e 44 50 4f 4e 44"
-	
-	Metadata >> "00"
-	CodeIndex >> "00 00"
-	Code >> "00 00"
-	
 )

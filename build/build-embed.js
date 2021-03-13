@@ -3,34 +3,22 @@
 
 			const global = window
 			const scope = {}
-			const term = (() => {
-	global.EWATode = Term.term('EWATode', scope)
-	return Term.subTerms(Term.string(''), [
-['EWATode', Term.chain(Term.term('EWATode.Source', scope), Term.term('EWATode.HexNums', scope))],
-['HexNums', Term.list([Term.term('HexNums.HexNum', scope), Term.maybe(Term.many(Term.term('HexNums.HexNumsTail', scope)))])],
-['HexNumsTail', Term.emit(Term.list([Term.maybe(Term.many(Term.regExp(/ |	/))), Term.term('HexNumsTail.HexNum', scope)]), ([gap, n]) => ` ${n}`)],
-['HexNum', Term.list([Term.term('HexNum.HexNumDigit', scope), Term.term('HexNum.HexNumDigit', scope)])],
-['HexNumDigit', Term.regExp(/[0-9A-Fa-f]/)],
-['Source', Term.list([
-		Term.term('Source.Magic', scope),
-		Term.term('Source.MinorVersion', scope),
-Term.term('Source.MajorVersion', scope),
-Term.term('Source.BuildTag', scope),
-Term.term('Source.Metadata', scope),
-Term.term('Source.CodeIndex', scope),
-Term.term('Source.Code', scope)
-	])],
-['Magic', Term.emit(Term.string(''), "02 03 07 41")],
-['MinorVersion', Term.emit(Term.string(''), "00 01")],
-['MajorVersion', Term.emit(Term.string(''), "00 00")],
-['BuildTag', Term.list([Term.term('BuildTag.BuildTagLength', scope), Term.term('BuildTag.BuildTags', scope)])],
-['BuildTagLength', Term.emit(Term.string(''), "08")],
-['BuildTags', Term.emit(Term.string(''), "53 41 4e 44 50 4f 4e 44")],
-['Metadata', Term.emit(Term.string(''), "00")],
-['CodeIndex', Term.emit(Term.string(''), "00 00")],
-['Code', Term.emit(Term.string(''), "00 00")]
-])
-})()
+			const term = Term.export(Term.subTerms(Term.chain(Term.term('WithoutComments', scope), Term.maybe(Term.many(Term.regExp(/[^]/)))), [
+['WithoutComments', Term.maybe(Term.many(Term.or([
+		Term.emit(Term.list([Term.string(`//`), Term.maybe(Term.many(Term.regExp(/[^]/)))]), ""),
+		Term.regExp(/[^]/)
+	])))],
+['Constant', Term.subTerms(Term.or([Term.term('Constant.UInt', scope), Term.term('Constant.SInt', scope), Term.term('Constant.Binary', scope), Term.term('Constant.Hex', scope)]), [
+['UInt', Term.check(Term.list([Term.regExp(/[1-9]/), Term.maybe(Term.many(Term.regExp(/[0-9]/)))]), (n) => n < 2**96-1)],
+['SInt', Term.check(Term.list([Term.or([Term.string(`+`), Term.string(`-`)]), Term.regExp(/[1-9]/), Term.maybe(Term.many(Term.regExp(/[0-9]/)))]), (n) => n > -(2**95) && n < 2**95-1)],
+['Binary', Term.list([Term.string(`0b`), Term.many(Term.or([Term.string(`0`), Term.string(`1`)]))])],
+['Hex', Term.list([Term.string(`0x`), Term.many(Term.regExp(/[0-9a-f]/))])]
+])],
+['Register', Term.subTerms(Term.or([Term.term('Register.Random', scope), Term.term('Register.Numbered', scope)]), [
+['Random', Term.string(`R?`)],
+['Numbered', Term.list([Term.string(`R`), Term.or([Term.regExp(/[0-9]/), Term.list([Term.string(`1`), Term.regExp(/[0-4]/)])])])]
+])]
+]), global, "EWATode")
 			for (const key in term) {
 				scope[key] = term[key]
 			}
