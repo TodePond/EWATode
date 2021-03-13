@@ -4,8 +4,8 @@
 	++ WithoutComments
 	:: /[^]/*
 	
-	WithoutComments :: <
-		:: "//" /[^\\\n]/* >> ""
+	WithoutComments <
+		:: "//" /[^\n]/* >> ""
 		/[^]/
 	>*
 	
@@ -30,4 +30,19 @@
 		Random :: "R?"
 		Numbered :: "R" /[0-9]/ | ("1" /[0-4]/)
 	)
+	
+	Symmetry <
+		:: "R000L"
+		:: "R090L"
+		:: "R180L"
+		:: "R270L"
+		:: "R000R"
+		:: "R090R"
+		:: "R180R"
+		:: "R270R"
+		:: "ALL"
+	>
+	
+	Label :: /[a-zA-Z0-9]/+ ":"
+	
 )

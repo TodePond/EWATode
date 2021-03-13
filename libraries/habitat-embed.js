@@ -431,6 +431,7 @@ Habitat.install = (global) => {
 	Habitat.MotherTode.read = (make = true, args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
+		//const source = dirtySource.split("").map(c => `\\${c}`).join("")
 		//print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {

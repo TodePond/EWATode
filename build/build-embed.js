@@ -17,7 +17,19 @@
 ['Register', Term.subTerms(Term.or([Term.term('Register.Random', scope), Term.term('Register.Numbered', scope)]), [
 ['Random', Term.string(`R?`)],
 ['Numbered', Term.list([Term.string(`R`), Term.or([Term.regExp(/[0-9]/), Term.list([Term.string(`1`), Term.regExp(/[0-4]/)])])])]
-])]
+])],
+['Symmetry', Term.or([
+		Term.string(`R000L`),
+		Term.string(`R090L`),
+Term.string(`R180L`),
+Term.string(`R270L`),
+Term.string(`R000R`),
+Term.string(`R090R`),
+Term.string(`R180R`),
+Term.string(`R270R`),
+Term.string(`ALL`)
+	])],
+['Label', Term.list([Term.many(Term.regExp(/[a-zA-Z0-9]/)), Term.string(`:`)])]
 ]), global, "EWATode")
 			for (const key in term) {
 				scope[key] = term[key]
