@@ -11,8 +11,7 @@ EWATode.Symmetry("R000L").log()
 EWATode.Label("loop:").log()
 EWATode(``).log()
 EWATode(`hi`).log()
-EWATode(`
-hi
-	
+EWATode(`hi
+
 hi
 `).log().d

@@ -1,5 +1,5 @@
 //import {Habitat} from "./libraries/habitat-import.js"
-import {Habitat} from "../Habitat-2/build/habitat-import.js"
+import {Habitat} from "../Habitat/build/habitat-import.js"
 Habitat.install(window)
 
 // Feel free to edit this file to suit your project
@@ -56,10 +56,10 @@ const readDir = async (path) => {
 			if (extension === "mt") {
 				const dirtySource = await readFile(entryPath)
 				const messySource = dirtySource.split("").filter(c => c !== "\r").join("")
-				const source = messySource.split("").map(c => {
-					if (c === "\\") return "\\\\\\\\"
+				const source = messySource/*.split("").map(c => {
+					if (c === "\\") return "\\\\"
 					return c
-				}).join("")
+				}).join("")*/
 				//print(source)
 				console.log("%cTranslating File: " + entryPath, "color: rgb(255, 128, 128)")
 				let js = MotherTode `${source}`.translation
